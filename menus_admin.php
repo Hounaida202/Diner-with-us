@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration des Menus</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         /* Styles généraux */
         * {
@@ -152,22 +153,39 @@
             padding: 15px 0;
             margin-top: 30px;
         }
+        .a{       
+        background-color: #b38b6d; 
+        padding: 12px 25px;
+        border-radius: 5px;
+        color: #fff;
+        font-weight: bold;
+        transition: background-color 0.3s;
+        border: 1px solid transparent;}
     </style>
 </head>
 <body>
+<div class="navbar">
+        <div class="logo">
+        Diner with us
+        </div>
+        <div>
+                <a class="navbar-choix" href="reservations_admin.php">Gestion des Réservations</a>
+                <a class="navbar-choix" href="statistiques.php">Statistiques</a>
+        </div>
+    </div>
     <!-- Titre principal -->
     <h1>Gestion des Menus</h1>
     <div class="add-menu">
-        <button >Ajouter un nouveau menu</button>
+        <a class="a" href="add_Menu.php">Ajouter un nouveau menu</a>
     </div>
     <!-- Conteneur principal pour les menus -->
-    <div class="menu-container">
         <!-- Exemple de carte de menu -->
 
 
         <div class="menu-container ">
         
         <div class="menu-card">
+            <h1>NOM</h1>
             <div class="menu-item">
             <h2>Entrée</h2>
                 <div class="menu-item-name">Foie Gras Maison</div>
@@ -191,9 +209,8 @@
         </div>
     </div> 
 
-
         <!-- Ajouter d'autres cartes de menus ici -->
-    </div>
+  
 
     <!-- Bouton pour ajouter un menu -->
    
@@ -202,5 +219,14 @@
     <footer>
         <p>© 2024 Restaurant Classique | Tous droits réservés.</p>
     </footer>
+    <script>
+let addNewMenu=document.querySelector(".add-new-menu");
+let container=document.querySelector(".menu-container");
+function AjouterNewMenu(){
+
+
+
+}
+    </script>
 </body>
 </html>
