@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistiques - Chef</title>
+    <link rel="stylesheet" href="style.css">
+
     <style>
         /* Styles généraux */
         * {
@@ -69,6 +71,17 @@
 </head>
 <body>
     <!-- Titre principal -->
+    <div class="navbar">
+        <div class="logo">
+            <a href="#">Diner with us</a>
+        </div>
+        <div>
+        <a class="navbar-choix" href="menus_admin.php">Gestion des Menus</a>
+
+                <a class="navbar-choix" href="reservations_admin.php">Gestion des Réservations</a>
+                <a class="navbar-choix" href="statistiques.php">Statistiques</a>
+        </div>
+    </div>
     <h1>Statistiques du Chef</h1>
 
     <!-- Conteneur principal pour les statistiques -->
