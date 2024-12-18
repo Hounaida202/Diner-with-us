@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu - Restaurant Classique</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         /* Styles généraux */
         * {
@@ -78,8 +79,7 @@
                left: 0;
                width: 100%;
                height: 100%;
-               align-items: center;
-               /* display: none; */
+               display: none;
         }
         .modal-content {
             
@@ -88,6 +88,8 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             width: 400px;
+            margin: auto;
+            margin-top: 100px;
         }
         .modal-content h2 {
             color: #b38b6d;
@@ -159,13 +161,22 @@
 
 
 ?>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <a href="#">Diner with us</a>
+        </div>
+        <div>
+                <a class="navbar-choix" href="consulter_reservations.php">Réservations</a>
+        </div>
+    </div>
     <!-- Titre principal -->
     <h1>Nos Menus</h1>
-
     <!-- Conteneur principal pour les cartes -->
     <div class="menu-container ">
         
         <div class="menu-card">
+            <h1>Vegetarian</h1>
             <div class="menu-item">
             <h2>Entrée</h2>
                 <div class="menu-item-name">Foie Gras Maison</div>
@@ -188,10 +199,11 @@
         </div>
     </div> 
 
-    <div id="reservationModal" class="modal">
+    <div id="reservationModal" class="modal" style="    display: none;
+">
         <div class="modal-content">
             <h2>Nouvelle Réservation</h2>
-            <form>
+            <form method="POST">
                 <label for="nom">Votre Nom :</label>
                 <input type="text" id="nom" name="nom" placeholder="Entrez votre nom" required>
 
@@ -200,11 +212,6 @@
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
                 </select>
 
                 <label for="date">Date de réservation :</label>
