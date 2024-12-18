@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vos Réservations - Restaurant Classique</title>
+    <link rel="stylesheet" href="style.css">
+
     <style>
         /* Styles généraux */
         * {
@@ -27,6 +29,8 @@
 
         /* Conteneur principal */
         .reservations-container {
+            position: relative;
+
             width: 80%;
             margin: auto;
             display: flex;
@@ -35,8 +39,9 @@
             padding: 20px;
         }
 
-        /* Carte pour chaque réservation */
         .reservation-card {
+            position: relative;
+
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 10px;
@@ -63,7 +68,6 @@
             color: #7f8c8d;
         }
 
-        /* Boutons d'action */
         .action-buttons button {
             background-color: #b38b6d;
             color: white;
@@ -79,7 +83,6 @@
             background-color: #8e6b48;
         }
 
-        /* Footer */
         footer {
             background-color: #2c3e50;
             color: #ecf0f1;
@@ -123,17 +126,23 @@
     </style>
 </head>
 <body>
-    <!-- Titre principal -->
+<div class="navbar">
+        <div class="logo">
+            <a href="#">Diner with us</a>
+        </div>
+        <div>
+                <a class="navbar-choix" href="menu_page.php">Menus</a>
+        </div>
+    </div>
     <h1>Vos Réservations</h1>
 
-    <!-- Conteneur principal pour les réservations -->
     <div class="reservations-container">
 
-        <!-- Exemple de carte pour une réservation -->
         <div class="reservation-card">
 
             <div style="display: flex; justify-content:space-between; gap:20px;">
             <div class="menu-card">
+                <h1>Vegetarian</h1>
             <div class="menu-item">
             <h2>Entrée</h2>
                 <div class="menu-item-name">Foie Gras Maison</div>
@@ -159,29 +168,46 @@
                 <p>Nombre de personnes : 2</p>
                 <p>Menu choisi : Menu Végétarien</p>
                 <div class="action-buttons">
-                    <button onclick="modifierReservation()">Changer</button>
-                    <button onclick="supprimerReservation()">Supprimer</button>
+                    <button id="reserver">Changer</button>
+                    <button >Supprimer</button>
                 </div>
             </div>
             </div>
         </div>
     </div> 
+    <div id="reservationModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Nouvelle Réservation</h2>
+            <form method="POST">
+                <label for="nom">Votre Nom :</label>
+                <input type="text" id="nom" name="nom" placeholder="Entrez votre nom" required>
+
+                <label for="nombre">Nombre de personnes :</label>
+                <select id="nombre" name="nombre">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+
+                <label for="date">Date de réservation :</label>
+                <input type="date" id="date" name="date" required>
+
+                <button type="submit">Sauvegarder</button>
+            </form>
+        </div>
+    </div>
     <!-- Footer -->
     <footer>
         <p>© 2024 Restaurant Classique | Tous droits réservés.</p>
     </footer>
 
     <script>
-        // Fonctions JavaScript pour les actions Modifier/Supprimer
-        function modifierReservation() {
-            alert("Fonction Modifier en cours de développement.");
-        }
-        
-        function supprimerReservation() {
-            if (confirm("Voulez-vous vraiment supprimer cette réservation ?")) {
-                alert("Réservation supprimée avec succès.");
-            }
-        }
-    </script>
+    let reserver=document.getElementById("reserver");
+    let modal=document.querySelector(".modal");
+    reserver.addEventListener("click",function(){
+    modal.style.display="block";
+    modal.classList.add("modal-background");
+    });
+</script>
 </body>
 </html>
