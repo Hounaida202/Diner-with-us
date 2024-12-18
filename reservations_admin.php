@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservations - Administration</title>
+    <link rel="stylesheet" href="style.css">
+
     <style>
-        /* Styles généraux */
         * {
             margin: 0;
             padding: 0;
@@ -92,12 +93,20 @@
     </style>
 </head>
 <body>
-    <!-- Titre principal -->
+<div class="navbar">
+        <div class="logo">
+            <a href="#">Diner with us</a>
+        </div>
+        <div>
+        <a class="navbar-choix" href="menus_admin.php">Gestion des Menus</a>
+
+                <a class="navbar-choix" href="reservations_admin.php">Gestion des Réservations</a>
+                <a class="navbar-choix" href="statistiques.php">Statistiques</a>
+        </div>
+    </div>
     <h1>Réservations des Menus</h1>
 
-    <!-- Conteneur principal pour les réservations -->
     <div class="reservation-container">
-        <!-- Exemple de carte de réservation -->
         <div class="reservation-card">
             <h2>Réservation #1</h2>
             <div class="reservation-info">
@@ -109,10 +118,8 @@
             <button class="btn-decline">Refuser</button>
         </div>
 
-        <!-- Ajouter d'autres cartes de réservations ici -->
     </div>
 
-    <!-- Footer -->
     <footer>
         <p>© 2024 Restaurant Classique | Tous droits réservés.</p>
     </footer>
