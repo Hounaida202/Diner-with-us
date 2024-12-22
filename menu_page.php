@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <style>
-            /* Styles généraux */
             * {
             margin: 0;
             padding: 0;
@@ -28,14 +27,12 @@
             color: #8e6b48;
         }
 
-        /* Conteneur principal */
         .menu-container {
            
             gap: 20px;
             padding: 20px;
         }
 
-        /* Carte pour chaque catégorie */
         .menu-card {
             background-color: #fff;
             border: 1px solid #ddd;
@@ -73,8 +70,8 @@
             font-size: 14px;
             color: #7f8c8d;
         }
-           /* Modale */
-           .modal {
+
+        .modal {
                      
                position: fixed;
                top: 0;
@@ -156,19 +153,16 @@
            }
 </style>
 <body>
-    
 
-     <!-- Navbar -->
-     <div class="navbar">
-        <div class="logo">
-            <a href="#">Diner with us</a>
-        </div>
-        <div>
-                <a class="navbar-choix" href="consulter_reservations.php">Réservations</a>
-        </div>
+<div class="navbar">
+    <div class="logo">
+        <a href="#">Diner with us</a>
     </div>
-    <h1>Nos Menus</h1>
-
+    <div>
+        <a class="navbar-choix" href="consulter_reservations.php">Réservations</a>
+    </div>
+</div>
+<h1>Nos Menus</h1>
 
 <?php
 $host = 'localhost';
@@ -182,7 +176,6 @@ if (!$conn) {
     die("Échec de la connexion : " . mysqli_connect_error());
 }
 
-
 $query = "
     SELECT 
         menus.menu_id,
@@ -191,7 +184,6 @@ $query = "
         plats.plat_name,
         plats.picture,
         plats.composants
-
     FROM 
         menus
     LEFT JOIN 
@@ -208,8 +200,7 @@ $result = mysqli_query($conn, $query);
 if (!$result) {
     die("Erreur dans la requête SQL : " . mysqli_error($conn));
 }
-
-if (mysqli_num_rows($result) > 0){
+if (mysqli_num_rows($result) > 0) {
     $currentMenuId = null;
 
     while ($row = mysqli_fetch_assoc($result)) {
@@ -222,78 +213,92 @@ if (mysqli_num_rows($result) > 0){
 
         if ($menuId !== $currentMenuId) {
             if ($currentMenuId !== null) {
-                echo '<input type="submit" class="reserver" value="Réserver">'; 
-                echo '</div>'; 
-                echo '</div>'; 
+                echo '<form method="POST" action="">
+                        <input type="hidden" name="menu_id" value="' . htmlspecialchars($currentMenuId) . '">
+                        <label for="date">Date de réservation :</label>
+                        <input type="date" name="date" required>
+                        <label for="nombre">Nombre de personnes :</label>
+                        <select name="nombre" required>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                        <input type="submit" name="reserver" class="reserver" value="Réserver">
+                      </form>
+                    </div>
+                </div>';
             }
 
-            echo '<div class="menu-container">';
-            echo '<div class="menu-card">';
-            echo '<h1>' . htmlspecialchars($menuName) . '</h1>';
+            echo '<div class="menu-container">
+                    <div class="menu-card">
+                        <h1>' . htmlspecialchars($menuName) . '</h1>';
 
             $currentMenuId = $menuId;
         }
 
         if (!empty($platName)) {
-            echo '<div class="menu-item">';
-            echo '<h2>' . htmlspecialchars($platType) . '</h2>';
-            echo '<div style="display: flex; justify-content: space-between">';
-            echo '  <div>';
-            echo '      <div class="menu-item-name">' . htmlspecialchars($platName) . '</div>';
-            echo '      <p class="menu-item-description">' . htmlspecialchars($composants) . '</p>';
-            echo '  </div>';
-            echo '  <img style="height: 150px; border-radius:50px" src="' . htmlspecialchars($picture) . '" alt="">';
-            echo '</div>';
-            echo '</div>';
+            echo '<div class="menu-item">
+                    <h2>' . htmlspecialchars($platType) . '</h2>
+                    <div style="display: flex; justify-content: space-between">
+                        <div>
+                            <div class="menu-item-name">' . htmlspecialchars($platName) . '</div>
+                            <p class="menu-item-description">' . htmlspecialchars($composants) . '</p>
+                        </div>
+                        <img style="height: 150px; border-radius:50px" src="' . htmlspecialchars($picture) . '" alt="">
+                    </div>
+                  </div>';
         }
     }
 
-    echo '<input type="submit" class="reserver" value="Réserver">';
-    echo '</div>';
-    echo '</div>'; 
+    echo '<form method="POST" action="">
+            <input type="hidden" name="menu_id" value="' . htmlspecialchars($currentMenuId) . '">
+            <label for="date">Date de réservation :</label>
+            <input type="date" name="date" required>
+            <label for="nombre">Nombre de personnes :</label>
+            <select name="nombre" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+            <input type="submit" name="reserver" class="reserver" value="Réserver">
+          </form>
+        </div>
+    </div>';
 } else {
     echo '<p>Aucun menu trouvé.</p>';
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['reserver'])) {
+    $menuId = isset($_POST['menu_id']) ? intval($_POST['menu_id']) : null;
+    $date = isset($_POST['date']) ? $_POST['date'] : null;
+    $guest = isset($_POST['nombre']) ? intval($_POST['nombre']) : null;
+
+    if ($menuId && $date && $guest) {
+        $insertQuery = "INSERT INTO reservations (date_reservation, nombre_guest, user_id, menu_id) 
+                        VALUES (?, ?, ?, ?)"; 
+        $stmt = mysqli_prepare($conn, $insertQuery);
+        mysqli_stmt_bind_param($stmt, 'sii', $date, $guest, $menuId);
+
+        if (mysqli_stmt_execute($stmt)) {
+            echo "<p>Réservation ajoutée avec succès.</p>";
+        } else {
+            echo "<p>Erreur lors de l'insertion : " . mysqli_error($conn) . "</p>";
+        }
+
+        mysqli_stmt_close($stmt);
+    } else {
+        echo "<p>Erreur : Tous les champs sont obligatoires.</p>";
+    }
+}
+
 mysqli_close($conn);
-
 ?>
-    <div id="reservationModal" class="modal" style="    display: none;">
-        <div class="modal-content">
-            <h2>Nouvelle Réservation</h2>
-            <form method="POST">
-                <label for="nom">Votre Nom :</label>
-                <input type="text" id="nom" name="nom" placeholder="Entrez votre nom" required>
-
-                <label for="nombre">Nombre de personnes :</label>
-                <select id="nombre" name="nombre">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-
-                <label for="date">Date de réservation :</label>
-                <input type="date" id="date" name="date" required>
-
-                <button type="submit">Réserver</button>
-            </form>
-        </div>
-    </div>
 
 <footer>
-        <p>© 2024 Restaurant Classique | Tous droits réservés.</p>
-    </footer>
-    <script>
-    let reserverAll = document.querySelectorAll(".reserver");
-    let modal = document.querySelector(".modal");
-
-    reserverAll.forEach(function(button) {
-        button.addEventListener("click", function() {
-            modal.style.display = "block";
-            modal.classList.add("modal-background");
-        });
-    });
-</script>
-
+    <p>© 2024 Restaurant Classique | Tous droits réservés.</p>
+</footer>
 </body>
 </html>
+
+
+
