@@ -1,13 +1,15 @@
+
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu - Restaurant Classique</title>
+    <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Styles généraux */
-        * {
+</head>
+<style>
+            /* Styles généraux */
+            * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -124,7 +126,7 @@
             background-color: #8e6b48;
         }
 
-        #reserver{
+        .reserver{
             background-color:#b38b6d;
             margin-top:10px;
             margin-left:450px;
@@ -136,10 +138,9 @@
             cursor: pointer;
 
         }
-        #reserver:hover{
+        .reserver:hover{
             background-color: #8e6b48;
 }
-        /* Footer */
         footer {
             background-color: #2c3e50;
             color: #ecf0f1;
@@ -153,16 +154,12 @@
         justify-content: center;
         
            }
-           
-    </style>
-</head>
+</style>
 <body>
-<?php
+    
 
-
-?>
-    <!-- Navbar -->
-    <div class="navbar">
+     <!-- Navbar -->
+     <div class="navbar">
         <div class="logo">
             <a href="#">Diner with us</a>
         </div>
@@ -170,37 +167,98 @@
                 <a class="navbar-choix" href="consulter_reservations.php">Réservations</a>
         </div>
     </div>
-    <!-- Titre principal -->
     <h1>Nos Menus</h1>
-    <!-- Conteneur principal pour les cartes -->
-    <div class="menu-container ">
-        
-        <div class="menu-card">
-            <h1>Vegetarian</h1>
-            <div class="menu-item">
-            <h2>Entrée</h2>
-                <div class="menu-item-name">Foie Gras Maison</div>
-            </div>
-            <div class="menu-item">
-            <h2>Plat principale</h2>
-                <div class="menu-item-name">Filet de Boeuf Rossini</div>
-            </div>
-            <div class="menu-item">
-            <h2>Dessert</h2>
-            <div style="display: flex; justify-content:space-between">
-                <div>
-                <div class="menu-item-name">jus d'orange</div>
-                 <p class="menu-item-description ">contient une orange sous forme jus</p>
-                </div>
-                <img style="height: 150px; border-radius:50px" src="https://fridg-front.s3.amazonaws.com/media/products/jus_orange_25_cl.JPG" alt="">
-                </div>
-            </div>
-            <input type="submit" id="reserver" value="reserver">
-        </div>
-    </div> 
 
-    <div id="reservationModal" class="modal" style="    display: none;
-">
+
+<?php
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$database = 'chef_cuisinier';
+
+$conn = mysqli_connect($host, $username, $password, $database);
+
+if (!$conn) {
+    die("Échec de la connexion : " . mysqli_connect_error());
+}
+
+
+$query = "
+    SELECT 
+        menus.menu_id,
+        menus.menu_name,
+        plats.plat_type,
+        plats.plat_name,
+        plats.picture,
+        plats.composants
+
+    FROM 
+        menus
+    LEFT JOIN 
+        plats
+    ON 
+        menus.menu_id = plats.menu_id
+    ORDER BY 
+        menus.menu_id, 
+        plats.plat_type;
+";
+
+$result = mysqli_query($conn, $query);
+
+if (!$result) {
+    die("Erreur dans la requête SQL : " . mysqli_error($conn));
+}
+
+if (mysqli_num_rows($result) > 0){
+    $currentMenuId = null;
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $menuId = $row['menu_id'];
+        $menuName = $row['menu_name'];
+        $platType = $row['plat_type'];
+        $platName = $row['plat_name'];
+        $composants = $row['composants'];
+        $picture = $row['picture'];
+
+        if ($menuId !== $currentMenuId) {
+            if ($currentMenuId !== null) {
+                echo '<input type="submit" class="reserver" value="Réserver">'; 
+                echo '</div>'; 
+                echo '</div>'; 
+            }
+
+            echo '<div class="menu-container">';
+            echo '<div class="menu-card">';
+            echo '<h1>' . htmlspecialchars($menuName) . '</h1>';
+
+            $currentMenuId = $menuId;
+        }
+
+        if (!empty($platName)) {
+            echo '<div class="menu-item">';
+            echo '<h2>' . htmlspecialchars($platType) . '</h2>';
+            echo '<div style="display: flex; justify-content: space-between">';
+            echo '  <div>';
+            echo '      <div class="menu-item-name">' . htmlspecialchars($platName) . '</div>';
+            echo '      <p class="menu-item-description">' . htmlspecialchars($composants) . '</p>';
+            echo '  </div>';
+            echo '  <img style="height: 150px; border-radius:50px" src="' . htmlspecialchars($picture) . '" alt="">';
+            echo '</div>';
+            echo '</div>';
+        }
+    }
+
+    echo '<input type="submit" class="reserver" value="Réserver">';
+    echo '</div>';
+    echo '</div>'; 
+} else {
+    echo '<p>Aucun menu trouvé.</p>';
+}
+
+mysqli_close($conn);
+
+?>
+    <div id="reservationModal" class="modal" style="    display: none;">
         <div class="modal-content">
             <h2>Nouvelle Réservation</h2>
             <form method="POST">
@@ -221,19 +279,21 @@
             </form>
         </div>
     </div>
-    
 
-    <!-- Footer -->
-    <footer>
+<footer>
         <p>© 2024 Restaurant Classique | Tous droits réservés.</p>
     </footer>
-<script>
-    let reserver=document.getElementById("reserver");
-    let modal=document.querySelector(".modal");
-    reserver.addEventListener("click",function(){
-    modal.style.display="block";
-    modal.classList.add("modal-background");
+    <script>
+    let reserverAll = document.querySelectorAll(".reserver");
+    let modal = document.querySelector(".modal");
+
+    reserverAll.forEach(function(button) {
+        button.addEventListener("click", function() {
+            modal.style.display = "block";
+            modal.classList.add("modal-background");
+        });
     });
 </script>
+
 </body>
 </html>
