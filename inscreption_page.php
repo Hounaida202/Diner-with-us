@@ -4,43 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription - Restaurant Classique</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        /* Général */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Georgia', serif;
-            background-color: #f7f7f7;
-            color: #2c3e50;
-        }
 
-        /* Navbar */
-        .navbar {
-            background-color: #2c3e50;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 2px solid #b38b6d;
-        }
-        .navbar a {
-            color: #ecf0f1;
-            text-decoration: none;
-            font-size: 18px;
-            margin: 0 20px;
-            transition: color 0.3s;
-        }
-        .navbar a:hover {
-            color: #b38b6d;
-        }
 
-        /* Formulaire d'inscription */
+  
+
         .form-container {
             max-width: 600px;
             margin: 50px auto;
@@ -94,26 +63,65 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
-        /* Footer */
         footer {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            text-align: center;
-            padding: 20px 0;
-            font-size: 16px;
-        }
-        footer a {
-            color: #b38b6d;
-            text-decoration: none;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        text-align: center;
+        padding: 20px 0;
+        font-size: 16px;
+    }
+    footer a {
+        color: #b38b6d;
+        text-decoration: none;
+    }
+    footer a:hover {
+        text-decoration: underline;
+    }
+
     </style>
 </head>
 <body>
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$bd = "chef_cuisinier";
 
+$con = mysqli_connect($host, $user, $password, $bd);
+if (!$con) {
+    die("Erreur de connexion : " . mysqli_connect_error());
+}
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['username'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); 
+    $role = 2; 
+  
+    $sql = "INSERT INTO users (user_name, email, password, role_id) VALUES ('$name', '$email', '$password', '$role')";
+
+    if ($con->query($sql) === TRUE) {
+
+        echo "Signup successful. You can now <a href='connexion_page.php'>login</a>.";
+
+        
+    } else {
+        echo "Error: " . $sql . "<br>" . $con->error;
+    }
+    $con->close();
+}
+
+
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+</head>
+<body>
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo">
@@ -124,10 +132,9 @@
         </div>
     </div>
 
-    <!-- Formulaire d'Inscription -->
     <div class="form-container">
         <h2>Inscrivez-vous</h2>
-        <form action="submit_form.html" method="post">
+        <form action="" method="post">
             <label for="username">Nom d'utilisateur</label>
             <input type="text" id="username" name="username" required>
 
@@ -137,20 +144,14 @@
             <label for="password">Mot de passe</label>
             <input type="password" id="password" name="password" required>
 
-            <select id="password" name="password" required>
-              <option value="option1">admin</option>
-              <option value="option2">user</option>
-            </select>
-
-            <input type="submit" value="S'inscrire">
+            <input type="submit" value="S'inscrire" name="submit">
         </form>
     </div>
-
-    <!-- Footer -->
-    <footer>
+        <!-- Footer -->
+        <footer>
         <p>© 2024 Restaurant Classique. Tous droits réservés.</p>
         <p><a href="#">Politique de confidentialité</a> | <a href="#">Conditions d'utilisation</a></p>
     </footer>
-
 </body>
 </html>
+
