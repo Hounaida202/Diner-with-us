@@ -160,7 +160,7 @@
     <div class="hero" >
     <div class="hero-content" style="display: flex; justify-content:space-between">
         <div>
-            <img style="height: 550px;" src="" alt="">
+            <img style="height: 550px;" src="https://media.self.com/photos/57d8952a24fe9dae3283190b/master/w_1600%2Cc_limit/Slow-Cooker-Chili-31.jpg" alt="">
         </div>
         <div style="padding-left: 40px; padding-top: 100px;">
             <h1>L'art de la cuisine classique, revisité</h1>
