@@ -102,6 +102,64 @@
     </style>
 </head>
 <body>
+<?php
+session_start(); // Démarre la session pour pouvoir utiliser $_SESSION
+
+$host = "localhost";
+$user = "root";
+$password = "";
+$bd = "chef_cuisinier";
+
+$conn = mysqli_connect($host, $user, $password, $bd);
+if (!$conn) {
+    die("Erreur de connexion : " . mysqli_connect_error());
+}
+
+if (isset($_POST['connecter'])) {
+    // Sécuriser les entrées utilisateur
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+
+    // Requête SQL pour vérifier l'existence de l'utilisateur
+    $sql = "SELECT * FROM users WHERE LOWER(email) = LOWER('$email')";
+    $result = mysqli_query($conn, $sql);
+    
+    // Vérifier si l'utilisateur existe
+    if (mysqli_num_rows($result) == 1) {
+        $username = mysqli_fetch_assoc($result);
+        
+        // Vérifier le mot de passe
+        if (password_verify($password, $username['password'])) {
+            // Stocker l'ID de l'utilisateur dans la session
+            $_SESSION['user_id'] = $username['user_id'];  // C'est ici que l'ID utilisateur est stocké
+
+            // Rediriger vers la page appropriée en fonction du rôle
+            if ($username['role_id'] == 1) {
+                header("Location: menus_admin.php"); // Rediriger vers la page admin
+                exit();
+            } else {
+                header("Location: menu_page.php"); // Rediriger vers la page des menus
+                exit();
+            }
+        } else {
+            echo "Mot de passe incorrect.";
+        }
+    } else {
+        echo "Email non trouvé.";
+    }
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
     <!-- Navbar -->
     <div class="navbar">
@@ -116,14 +174,14 @@
     <!-- Formulaire de Connexion -->
     <div class="form-container">
         <h2>Connexion</h2>
-        <form action="login_action.html" method="post">
+        <form action="" method="post">
             <label for="email">Adresse e-mail</label>
             <input type="email" id="email" name="email" required>
 
             <label for="password">Mot de passe</label>
             <input type="password" id="password" name="password" required>
 
-            <input type="submit" value="Se connecter">
+            <input type="submit" value="Se connecter" name="connecter">
         </form>
     </div>
 
@@ -135,3 +193,4 @@
 
 </body>
 </html>
+
