@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - Restaurant Classique</title>
     <style>
-        /* Général */
         * {
             margin: 0;
             padding: 0;
@@ -17,7 +16,6 @@
             color: #2c3e50;
         }
 
-        /* Navbar */
         .navbar {
             background-color: #2c3e50;
             padding: 15px 30px;
@@ -40,7 +38,6 @@
             color: #b38b6d;
         }
 
-        /* Formulaire de Connexion */
         .form-container {
             max-width: 600px;
             margin: 50px auto;
@@ -84,7 +81,6 @@
             background-color: #8e6b48;
         }
 
-        /* Footer */
         footer {
             background-color: #2c3e50;
             color: #ecf0f1;
@@ -103,7 +99,7 @@
 </head>
 <body>
 <?php
-session_start(); // Démarre la session pour pouvoir utiliser $_SESSION
+session_start(); 
 
 $host = "localhost";
 $user = "root";
@@ -116,29 +112,24 @@ if (!$conn) {
 }
 
 if (isset($_POST['connecter'])) {
-    // Sécuriser les entrées utilisateur
+
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
 
-    // Requête SQL pour vérifier l'existence de l'utilisateur
     $sql = "SELECT * FROM users WHERE LOWER(email) = LOWER('$email')";
     $result = mysqli_query($conn, $sql);
     
-    // Vérifier si l'utilisateur existe
     if (mysqli_num_rows($result) == 1) {
         $username = mysqli_fetch_assoc($result);
         
-        // Vérifier le mot de passe
         if (password_verify($password, $username['password'])) {
-            // Stocker l'ID de l'utilisateur dans la session
-            $_SESSION['user_id'] = $username['user_id'];  // C'est ici que l'ID utilisateur est stocké
+            $_SESSION['user_id'] = $username['user_id']; 
 
-            // Rediriger vers la page appropriée en fonction du rôle
             if ($username['role_id'] == 1) {
-                header("Location: menus_admin.php"); // Rediriger vers la page admin
+                header("Location: menus_admin.php"); 
                 exit();
             } else {
-                header("Location: menu_page.php"); // Rediriger vers la page des menus
+                header("Location: menu_page.php"); 
                 exit();
             }
         } else {
@@ -161,7 +152,6 @@ if (isset($_POST['connecter'])) {
 </head>
 <body>
 
-    <!-- Navbar -->
     <div class="navbar">
         <div class="logo">
             <a href="#">Restaurant Classique</a>
@@ -171,7 +161,6 @@ if (isset($_POST['connecter'])) {
         </div>
     </div>
 
-    <!-- Formulaire de Connexion -->
     <div class="form-container">
         <h2>Connexion</h2>
         <form action="" method="post">
@@ -185,7 +174,6 @@ if (isset($_POST['connecter'])) {
         </form>
     </div>
 
-    <!-- Footer -->
     <footer>
         <p>© 2024 Restaurant Classique. Tous droits réservés.</p>
         <p><a href="#">Politique de confidentialité</a> | <a href="#">Conditions d'utilisation</a></p>
