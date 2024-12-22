@@ -1,10 +1,13 @@
+<?php
+session_start();
+?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Nos Menus</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <style>
@@ -163,19 +166,16 @@
     </div>
 </div>
 <h1>Nos Menus</h1>
-
 <?php
 $host = 'localhost';
 $username = 'root';
 $password = '';
 $database = 'chef_cuisinier';
-
 $conn = mysqli_connect($host, $username, $password, $database);
 
 if (!$conn) {
     die("Échec de la connexion : " . mysqli_connect_error());
 }
-
 $query = "
     SELECT 
         menus.menu_id,
@@ -200,6 +200,7 @@ $result = mysqli_query($conn, $query);
 if (!$result) {
     die("Erreur dans la requête SQL : " . mysqli_error($conn));
 }
+
 if (mysqli_num_rows($result) > 0) {
     $currentMenuId = null;
 
@@ -228,14 +229,12 @@ if (mysqli_num_rows($result) > 0) {
                     </div>
                 </div>';
             }
-
             echo '<div class="menu-container">
                     <div class="menu-card">
                         <h1>' . htmlspecialchars($menuName) . '</h1>';
 
             $currentMenuId = $menuId;
         }
-
         if (!empty($platName)) {
             echo '<div class="menu-item">
                     <h2>' . htmlspecialchars($platType) . '</h2>
@@ -249,7 +248,6 @@ if (mysqli_num_rows($result) > 0) {
                   </div>';
         }
     }
-
     echo '<form method="POST" action="">
             <input type="hidden" name="menu_id" value="' . htmlspecialchars($currentMenuId) . '">
             <label for="date">Date de réservation :</label>
@@ -267,30 +265,36 @@ if (mysqli_num_rows($result) > 0) {
 } else {
     echo '<p>Aucun menu trouvé.</p>';
 }
-
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['reserver'])) {
     $menuId = isset($_POST['menu_id']) ? intval($_POST['menu_id']) : null;
-    $date = isset($_POST['date']) ? $_POST['date'] : null;
+    $date = isset($_POST['date']) ? trim($_POST['date']) : null;
     $guest = isset($_POST['nombre']) ? intval($_POST['nombre']) : null;
 
-    if ($menuId && $date && $guest) {
-        $insertQuery = "INSERT INTO reservations (date_reservation, nombre_guest, user_id, menu_id) 
-                        VALUES (?, ?, ?, ?)"; 
-        $stmt = mysqli_prepare($conn, $insertQuery);
-        mysqli_stmt_bind_param($stmt, 'sii', $date, $guest, $menuId);
+    $userId = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : null;
 
-        if (mysqli_stmt_execute($stmt)) {
-            echo "<p>Réservation ajoutée avec succès.</p>";
-        } else {
-            echo "<p>Erreur lors de l'insertion : " . mysqli_error($conn) . "</p>";
-        }
-
-        mysqli_stmt_close($stmt);
-    } else {
-        echo "<p>Erreur : Tous les champs sont obligatoires.</p>";
+    if (!$menuId || !$date || !$guest || !$userId) {
+        echo "<p>Erreur : 
+            " . (!$menuId ? "Menu ID manquant, " : "") . 
+            (!$date ? "Date manquante, " : "") . 
+            (!$guest ? "Nombre de personnes manquant, " : "") . 
+            (!$userId ? "Utilisateur non connecté" : "") . 
+            ".</p>";
+        exit;
     }
+    $insertQuery = "INSERT INTO reservations (date_reservation, nombre_guest, user_id, menu_id) 
+                    VALUES (?, ?, ?, ?)";
+    $stmt = mysqli_prepare($conn, $insertQuery);
+    if (!$stmt) {
+        die("Erreur dans la préparation de la requête : " . mysqli_error($conn));
+    }
+    mysqli_stmt_bind_param($stmt, 'siii', $date, $guest, $userId, $menuId);
+    if (mysqli_stmt_execute($stmt)) {
+        echo "<p>Réservation ajoutée avec succès.</p>";
+    } else {
+        echo "<p>Erreur lors de l'insertion : " . mysqli_error($conn) . "</p>";
+    }
+    mysqli_stmt_close($stmt);
 }
-
 mysqli_close($conn);
 ?>
 
@@ -299,6 +303,7 @@ mysqli_close($conn);
 </footer>
 </body>
 </html>
+
 
 
 
