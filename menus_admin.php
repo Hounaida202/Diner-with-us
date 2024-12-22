@@ -6,7 +6,6 @@
     <title>Administration des Menus</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Styles généraux */
         * {
             margin: 0;
             padding: 0;
@@ -107,7 +106,6 @@
            padding: 20px;
        }
 
-       /* Carte pour chaque catégorie */
        .menu-card {
            background-color: #fff;
            border: 1px solid #ddd;
@@ -173,60 +171,95 @@
                 <a class="navbar-choix" href="statistiques.php">Statistiques</a>
         </div>
     </div>
-    <!-- Titre principal -->
     <h1>Gestion des Menus</h1>
     <div class="add-menu">
         <a class="a" href="add_Menu.php">Ajouter un nouveau menu</a>
     </div>
-    <!-- Conteneur principal pour les menus -->
-        <!-- Exemple de carte de menu -->
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$bd = "chef_cuisinier";
 
-
-        <div class="menu-container ">
-        
-        <div class="menu-card">
-            <h1>NOM</h1>
-            <div class="menu-item">
-            <h2>Entrée</h2>
-                <div class="menu-item-name">Foie Gras Maison</div>
-            </div>
-            <div class="menu-item">
-            <h2>Plat principale</h2>
-                <div class="menu-item-name">Filet de Boeuf Rossini</div>
-            </div>
-            <div class="menu-item">
-            <h2>Dessert</h2>
-            <div style="display: flex; justify-content:space-between">
-                <div>
-                <div class="menu-item-name">jus d'orange</div>
-                 <p class="menu-item-description ">contient une orange sous forme jus</p>
-                </div>
-                <img style="height: 150px; border-radius:50px" src="https://fridg-front.s3.amazonaws.com/media/products/jus_orange_25_cl.JPG" alt="">
-                </div>
-            </div>
-            <button>Modifier</button>
-            <button>Supprimer</button>
-        </div>
-    </div> 
-
-        <!-- Ajouter d'autres cartes de menus ici -->
-  
-
-    <!-- Bouton pour ajouter un menu -->
-   
-
-    <!-- Footer -->
-    <footer>
-        <p>© 2024 Restaurant Classique | Tous droits réservés.</p>
-    </footer>
-    <script>
-let addNewMenu=document.querySelector(".add-new-menu");
-let container=document.querySelector(".menu-container");
-function AjouterNewMenu(){
-
-
-
+$conn = mysqli_connect($host, $user, $password, $bd);
+if (!$conn) {
+    die("Erreur de connexion : " . mysqli_connect_error());
 }
-    </script>
+
+$query = "
+    SELECT 
+        menus.menu_id,
+        menus.menu_name,
+        plats.plat_type,
+        plats.plat_name,
+        plats.picture,
+        plats.composants
+    FROM 
+        menus
+    LEFT JOIN 
+        plats
+    ON 
+        menus.menu_id = plats.menu_id
+    ORDER BY 
+        menus.menu_id, 
+        plats.plat_type;
+";
+
+$result = mysqli_query($conn, $query);
+if (mysqli_num_rows($result) > 0) {
+    $currentMenuId = null;
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $menuId = $row['menu_id'];
+        $menuName = $row['menu_name'];
+        $platType = $row['plat_type'];
+        $platName = $row['plat_name'];
+        $composants = $row['composants'];
+        $picture = $row['picture'];
+
+        if ($menuId !== $currentMenuId) {
+            if ($currentMenuId !== null) {
+                echo '</div>'; 
+                echo '<div style="margin-top: 10px;">
+                        <button onclick="modifierMenu(' . $currentMenuId . ')">Modifier</button>
+                        <button onclick="supprimerMenu(' . $currentMenuId . ')">Supprimer</button>
+                      </div>
+                    </div>'; 
+            }
+
+            echo '<div class="menu-container">
+                    <div class="menu-card">
+                        <h1>' . htmlspecialchars($menuName) . '</h1>
+                        <div class="menu-items">';
+            $currentMenuId = $menuId;
+        }
+
+        if (!empty($platName)) {
+            echo '<div class="menu-item">
+                    <h2>' . htmlspecialchars($platType) . '</h2>
+                    <div style="display: flex; justify-content: space-between">
+                        <div>
+                            <div class="menu-item-name">' . htmlspecialchars($platName) . '</div>
+                            <p class="menu-item-description">' . htmlspecialchars($composants) . '</p>
+                        </div>
+                        <img style="height: 150px; border-radius:50px" src="' . htmlspecialchars($picture) . '" alt="Image du plat">
+                    </div>
+                  </div>';
+        }
+    }
+
+    echo '</div>'; 
+    echo '<div style="margin-top: 10px;">
+            <button onclick="modifierMenu(' . $currentMenuId . ')">Modifier</button>
+            <button onclick="supprimerMenu(' . $currentMenuId . ')">Supprimer</button>
+          </div>
+        </div>'; 
+} else {
+    echo '<p>Aucun menu trouvé.</p>';
+}
+
+mysqli_close($conn);
+?>
+
 </body>
 </html>
