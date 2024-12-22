@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant en ligne</title>
     <style>
-        /* Général */
         * {
             margin: 0;
             padding: 0;
@@ -17,7 +16,6 @@
             color: #2c3e50;
         }
 
-        /* Navbar */
         .navbar {
             background-color: #2c3e50;
             padding: 15px 30px;
@@ -27,7 +25,7 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 2px solid #b38b6d; /* Légère bordure dorée */
+            border-bottom: 2px solid #b38b6d; 
         }
         .navbar a {
             color: #ecf0f1;
@@ -37,10 +35,10 @@
             transition: color 0.3s;
         }
         .navbar a:hover {
-            color: #b38b6d; /* Couleur or lors du survol */
+            color: #b38b6d; 
         }
         .navbar .buttons a {
-            background-color: #b38b6d; /* Doré élégant */
+            background-color: #b38b6d; 
             padding: 12px 25px;
             border-radius: 5px;
             color: #fff;
@@ -49,19 +47,10 @@
             border: 1px solid transparent;
         }
         .navbar .buttons a:hover {
-            background-color: #8e6b48; /* Doré plus foncé au survol */
+            background-color: #8e6b48;
             border: 1px solid #b38b6d;
         }
 
-        /* Hero Section */
-        /* .hero {
-            background-image: url('https://via.placeholder.com/1600x600');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-            padding: 120px 20px;
-        } */
         .hero h1 {
             font-size: 55px;
             margin-bottom: 15px;
@@ -71,7 +60,6 @@
             font-weight: 300;
         }
 
-        /* Footer */
         footer {
             background-color: #2c3e50;
             color: #ecf0f1;
@@ -89,29 +77,6 @@
         footer a:hover {
             text-decoration: underline;
         }
-        /* .hero {
-        background-image: url('votre-image-de-fond.jpg'); /* Remplacez par votre image */
-        /* background-size: cover;
-        background-position: center;
-        color: white;
-        text-align: center;
-        padding: 150px 20px;
-        position: relative;
-    } */ 
-    /* .hero:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.4); /* Fond sombre semi-transparent pour lisibilité */
-        /* z-index: 1;
-    } */ 
-    /* .hero-content {
-        position: relative;
-        margin: 0 auto;
-    } */
     .hero h1 {
         font-size: 60px;
         font-weight: bold;
@@ -134,7 +99,7 @@
         border: 1px solid transparent;
     }
     .btn:hover {
-        background-color: #8e6b48; /* Doré plus foncé au survol */
+        background-color: #8e6b48; 
         border: 1px solid #b38b6d;
     }
     .hero{
